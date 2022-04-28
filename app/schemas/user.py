@@ -6,7 +6,7 @@ class UserBase(BaseModel):
     last_name: str
 
 
-class User(UserBase):
+class UserCreate(UserBase):
     id: int
 
     class Config:
