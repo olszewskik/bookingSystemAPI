@@ -5,7 +5,7 @@ class ItemBase(BaseModel):
     description: str
 
 
-class Item(ItemBase):
+class ItemCreate(ItemBase):
     id: int
 
     class Config:
