@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, DateTime
 
 from app.db.base import Base
 
@@ -8,3 +8,4 @@ class Item(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     description = Column(String(50))
+    creation_date = Column(DateTime)
