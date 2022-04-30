@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
@@ -21,7 +23,7 @@ def create_user(db: Session, user: UserCreate):
     #     password=user.password,
     # )
     new_user_data = jsonable_encoder(user)
-    new_user = User(**new_user_data)
+    new_user = User(**new_user_data, creation_date=datetime.utcnow())
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
