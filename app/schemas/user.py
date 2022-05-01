@@ -1,12 +1,17 @@
 import datetime
+from enum import Enum
+from pydantic import BaseModel, Field
 
-from pydantic import BaseModel
+
+class Gender(str, Enum):
+    male = 'male'
+    female = 'female'
 
 
 class UserBase(BaseModel):
     first_name: str
     last_name: str
-    gender: str
+    gender: Gender = Field(None, alias='gender')
     phone: str
     email: str
     status: str

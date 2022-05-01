@@ -15,13 +15,11 @@ def get_users(db: Session, skip: int = 0, limit: int = 100):
     return db.query(User).offset(skip).limit(limit).all()
 
 
+def get_by_email(db: Session, email: str):
+    return db.query(User).filter(User.email == email).first()
+
+
 def create_user(db: Session, user: UserCreate):
-    # new_user = User(
-    #     first_name=user.first_name,
-    #     last_name=user.last_name,
-    #     email=user.email,
-    #     password=user.password,
-    # )
     new_user_data = jsonable_encoder(user)
     new_user = User(**new_user_data, creation_date=datetime.utcnow())
     db.add(new_user)

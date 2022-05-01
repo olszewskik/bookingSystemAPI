@@ -25,5 +25,11 @@ def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 
 
 @router.post("/", response_model=schemas.UserCreate)
-def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-    return crud_user.create_user(db=db, user=user)
+def create_user(user_in: schemas.UserCreate, db: Session = Depends(get_db)):
+    user = crud_user.get_by_email(db, email=user_in.email)
+    if user:
+        raise HTTPException(
+            status_code=400, detail="The user with this email already exist."
+        )
+    user = crud_user.create_user(db=db, user=user_in)
+    return user
