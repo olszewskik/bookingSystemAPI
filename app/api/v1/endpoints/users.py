@@ -12,7 +12,7 @@ router = APIRouter()
 
 @router.get("/{user_id}", response_model=schemas.UserRead)
 def read_user(user_id: int, db: Session = Depends(get_db)):
-    db_user = crud_user.get_user(db, user_id=user_id)
+    db_user = crud_user.get_user_by_id(db, user_id=user_id)
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
     return db_user
@@ -26,7 +26,7 @@ def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 
 @router.post("/", response_model=schemas.UserCreate)
 def create_user(user_in: schemas.UserCreate, db: Session = Depends(get_db)):
-    user = crud_user.get_by_email(db, email=user_in.email)
+    user = crud_user.get_user_by_email(db, email=user_in.email)
     if user:
         raise HTTPException(
             status_code=400, detail="The user with this email already exist."

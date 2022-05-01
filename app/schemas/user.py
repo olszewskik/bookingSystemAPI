@@ -4,14 +4,14 @@ from pydantic import BaseModel, Field
 
 
 class Gender(str, Enum):
-    male = 'male'
-    female = 'female'
+    male = "male"
+    female = "female"
 
 
 class UserBase(BaseModel):
     first_name: str
     last_name: str
-    gender: Gender = Field(None, alias='gender')
+    gender: Gender = Field(None, alias="gender")
     phone: str
     email: str
     status: str
