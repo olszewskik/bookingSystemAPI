@@ -15,7 +15,9 @@ def get_locations(db: Session, skip: int = 0, limit: int = 100):
 
 def create_location(db: Session, location: LocationBase):
     # new_location_data = jsonable_encoder(location)
-    new_location = Location(name=location.name, latitude=location.latitude, longitude=location.longitude)
+    new_location = Location(
+        name=location.name, latitude=location.latitude, longitude=location.longitude
+    )
     db.add(new_location)
     db.commit()
     db.refresh(new_location)

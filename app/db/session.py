@@ -4,10 +4,6 @@ from sqlalchemy.orm import sessionmaker
 
 from app.core.config import settings
 
-# engine = create_engine(
-#     "sqlite:///app/db/booking_system_database.db",
-#     connect_args={"check_same_thread": False},
-# )
 
 engine = create_engine(
     f"mariadb+pymysql://{settings.DATABASE_USER}:{settings.DATABASE_PASS}@{settings.DATABASE_SERVER}/{settings.DATABASE_NAME}"

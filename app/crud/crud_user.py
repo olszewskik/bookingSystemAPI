@@ -3,6 +3,7 @@ from datetime import datetime
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
+from app.core.security import get_password_hash
 from app.models.user import User
 from app.schemas.user import UserCreate
 
@@ -20,8 +21,18 @@ def get_users(db: Session, skip: int = 0, limit: int = 100):
 
 
 def create_user(db: Session, user: UserCreate):
-    new_user_data = jsonable_encoder(user)
-    new_user = User(**new_user_data, creation_date=datetime.now())
+    # new_user_data = jsonable_encoder(user)
+    new_user = User(
+        # **new_user_data,
+        first_name=user.first_name,
+        last_name=user.last_name,
+        gender=user.gender,
+        phone=user.phone,
+        email=user.email,
+        status=user.status,
+        password=get_password_hash(user.password),
+        creation_date=datetime.now(),
+    )
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
