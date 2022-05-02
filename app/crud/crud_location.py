@@ -1,8 +1,7 @@
-from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
 from app.models.location import Location
-from app.schemas.location import LocationCreate, LocationBase
+from app.schemas.location import LocationBase
 
 
 def get_location_by_id(db: Session, location_id: int):
@@ -14,7 +13,6 @@ def get_locations(db: Session, skip: int = 0, limit: int = 100):
 
 
 def create_location(db: Session, location: LocationBase):
-    # new_location_data = jsonable_encoder(location)
     new_location = Location(
         name=location.name, latitude=location.latitude, longitude=location.longitude
     )

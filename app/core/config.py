@@ -13,6 +13,9 @@ class Settings(BaseSettings):
     DATABASE_NAME: str = os.getenv("DB_NAME")
     DATABASE_USER: str = os.getenv("DB_USER")
     DATABASE_PASS: str = os.getenv("DB_PASS")
+    SECRET_KEY: str = os.getenv("SECRET_KEY")
+    ALGORITHM: str = os.getenv("ALGORITHM")
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
 
 settings = Settings()
