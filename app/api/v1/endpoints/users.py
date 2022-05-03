@@ -3,7 +3,7 @@ from typing import List, Any
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_db
+from app.api.deps import get_db, oauth2_scheme
 from app import crud
 from app import schemas
 
@@ -23,7 +23,8 @@ def read_user(user_id: int, db: Session = Depends(get_db)) -> Any:
 
 
 @router.get("/", response_model=List[schemas.UserRead], status_code=status.HTTP_200_OK)
-def read_users(db: Session = Depends(get_db), skip: int = 0, limit: int = 100) -> Any:
+def read_users(db: Session = Depends(get_db), skip: int = 0, limit: int = 100, token: str = Depends(oauth2_scheme)) -> Any:
+    print(token)
     users = crud.user.get_users(db, skip=skip, limit=limit)
     return users
 
