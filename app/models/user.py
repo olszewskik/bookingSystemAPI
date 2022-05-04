@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, DateTime, Boolean
 
 from app.db.base import Base
 
@@ -15,3 +15,4 @@ class User(Base):
     password = Column(String(255))
     status = Column(String(50))
     creation_date = Column(DateTime)
+    is_active = Column(Boolean(), default=True)

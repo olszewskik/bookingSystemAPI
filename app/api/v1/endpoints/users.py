@@ -3,9 +3,8 @@ from typing import List, Any
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_db, oauth2_scheme
-from app import crud
-from app import schemas
+from app.api.deps import get_db, get_current_active_user
+from app import crud, schemas, models
 
 router = APIRouter()
 
@@ -27,11 +26,17 @@ def read_users(
     db: Session = Depends(get_db),
     skip: int = 0,
     limit: int = 100,
-    token: str = Depends(oauth2_scheme),
 ) -> Any:
-    print(token)
     users = crud.user.get_users(db, skip=skip, limit=limit)
     return users
+
+
+@router.get("/me", response_model=schemas.UserBase)
+def read_user_me(
+    db: Session = Depends(get_db),
+    current_user: schemas.UserBase = Depends(get_current_active_user),
+) -> Any:
+    return current_user
 
 
 @router.post(

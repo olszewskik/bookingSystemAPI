@@ -2,6 +2,7 @@ from datetime import timedelta
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from app import crud, schemas
@@ -13,8 +14,13 @@ router = APIRouter()
 
 
 @router.post("/login", response_model=schemas.Token, status_code=status.HTTP_200_OK)
-def login_user(login: schemas.Login, db: Session = Depends(get_db)) -> Any:
-    user = crud.user.authenticate(db, email=login.email, password=login.password)
+def login_user(
+    db: Session = Depends(get_db),
+    form_data: OAuth2PasswordRequestForm = Depends(),
+) -> Any:
+    user = crud.user.authenticate(
+        db, email=form_data.username, password=form_data.password
+    )
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

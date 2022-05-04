@@ -1,5 +1,6 @@
 import datetime
 from enum import Enum
+from typing import Optional
 from pydantic import BaseModel, Field
 
 
@@ -15,6 +16,7 @@ class UserBase(BaseModel):
     phone: str
     email: str
     status: str
+    is_active: Optional[bool] = True
 
 
 class UserCreate(UserBase):
