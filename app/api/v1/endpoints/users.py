@@ -26,15 +26,16 @@ def read_users(
     db: Session = Depends(get_db),
     skip: int = 0,
     limit: int = 100,
+    current_user: models.User = Depends(get_current_active_user),
 ) -> Any:
     users = crud.user.get_users(db, skip=skip, limit=limit)
     return users
 
 
-@router.get("/me", response_model=schemas.UserBase)
+@router.get("/me", response_model=schemas.UserRead)
 def read_user_me(
     db: Session = Depends(get_db),
-    current_user: schemas.UserBase = Depends(get_current_active_user),
+    current_user: models.User = Depends(get_current_active_user),
 ) -> Any:
     return current_user
 
