@@ -4,22 +4,21 @@ from datetime import datetime
 from sqlalchemy.orm import Session
 
 from app.core.security import get_password_hash, verify_password
-from app.models.user import User
-from app.schemas.user import UserCreate
+from app import models, schemas
 
 
 class CRUDUser:
-    def get_user_by_id(self, db: Session, *, user_id: int) -> User:
-        return db.query(User).filter(User.id == user_id).first()
+    async def get_user_by_id(self, db: Session, *, user_id: int) -> models.User:
+        return db.query(models.User).filter(models.User.id == user_id).first()
 
-    def get_user_by_email(self, db: Session, *, email: str) -> Optional[User]:
-        return db.query(User).filter(User.email == email).first()
+    async def get_user_by_email(self, db: Session, *, email: str) -> Optional[models.User]:
+        return db.query(models.User).filter(models.User.email == email).first()
 
-    def get_users(self, db: Session, *, skip: int = 0, limit: int = 100) -> User:
-        return db.query(User).offset(skip).limit(limit).all()
+    async def get_users(self, db: Session, *, skip: int = 0, limit: int = 100) -> models.User:
+        return db.query(models.User).offset(skip).limit(limit).all()
 
-    def create_user(self, db: Session, *, user: UserCreate) -> User:
-        new_user = User(
+    async def create_user(self, db: Session, *, user: schemas.UserCreate) -> models.User:
+        new_user = models.User(
             first_name=user.first_name,
             last_name=user.last_name,
             gender=user.gender,
@@ -34,15 +33,15 @@ class CRUDUser:
         db.refresh(new_user)
         return new_user
 
-    def authenticate(self, db: Session, *, email: str, password: str) -> Optional[User]:
-        user = self.get_user_by_email(db, email=email)
-        if not user:
+    async def authenticate(self, db: Session, *, email: str, password: str) -> Optional[models.User]:
+        db_user = await self.get_user_by_email(db, email=email)
+        if not db_user:
             return None
-        if not verify_password(password, user.password):
+        if not verify_password(password, db_user.password):
             return None
-        return user
+        return db_user
 
-    def is_active(self, user: User) -> bool:
+    def is_active(self, user: models.User) -> bool:
         return user.is_active
 
 

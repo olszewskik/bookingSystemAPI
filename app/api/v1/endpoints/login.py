@@ -14,11 +14,11 @@ router = APIRouter()
 
 
 @router.post("/login", response_model=schemas.Token, status_code=status.HTTP_200_OK)
-def login_user(
+async def login_user(
     db: Session = Depends(get_db),
     form_data: OAuth2PasswordRequestForm = Depends(),
 ) -> Any:
-    user = crud.user.authenticate(
+    user = await crud.user.authenticate(
         db, email=form_data.username, password=form_data.password
     )
     if user is None:

@@ -18,6 +18,9 @@ class UserBase(BaseModel):
     status: str
     is_active: Optional[bool] = True
 
+    class Config:
+        orm_mode = True
+
 
 class UserCreate(UserBase):
     password: str

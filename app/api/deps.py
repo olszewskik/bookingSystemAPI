@@ -22,9 +22,9 @@ def get_db():
         db.close()
 
 
-def get_current_user(
+async def get_current_user(
     db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)
-) -> models.User:
+) -> schemas.UserRead:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -40,10 +40,10 @@ def get_current_user(
         token_data = schemas.TokenData(email=username)
     except JWTError:
         raise credentials_exception
-    user = crud.user.get_user_by_email(db, email=token_data.email)
+    user = await crud.user.get_user_by_email(db, email=token_data.email)
     if not user:
         raise credentials_exception
-    return user
+    return schemas.UserRead.from_orm(user)
 
 
 def get_current_active_user(
