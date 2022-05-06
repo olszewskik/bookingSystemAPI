@@ -8,6 +8,10 @@ class ItemBase(BaseModel):
 
 
 class ItemCreate(ItemBase):
+    pass
+
+
+class ItemRead(ItemBase):
     id: int
     creation_date: datetime.datetime
 

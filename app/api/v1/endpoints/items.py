@@ -10,7 +10,7 @@ from app.api.deps import get_db, get_current_active_user, get_current_active_adm
 router = APIRouter()
 
 
-@router.get("/", response_model=List[schemas.ItemCreate])
+@router.get("/", response_model=List[schemas.ItemRead])
 async def read_items(
     skip: int = 0,
     limit: int = 100,
@@ -30,7 +30,7 @@ async def create_item(
     return await crud.item.create_item(db=db, item=item)
 
 
-@router.get("/{item_id}", response_model=schemas.ItemCreate)
+@router.get("/{item_id}", response_model=schemas.ItemRead)
 async def read_item(
     item_id: int,
     db: Session = Depends(get_db),
