@@ -2,6 +2,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
 from sqlalchemy.orm import Session
+from pydantic import ValidationError
 
 from app import models, crud, schemas
 from app.core.config import settings
@@ -24,7 +25,7 @@ def get_db():
 
 async def get_current_user(
     db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)
-) -> schemas.UserRead:
+):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -37,19 +38,19 @@ async def get_current_user(
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception
-        token_data = schemas.TokenData(email=username)
+        token_data = schemas.TokenData(username=username)
     except JWTError:
         raise credentials_exception
-    user = await crud.user.get_user_by_email(db, email=token_data.email)
-    if not user:
+    user = await crud.user.get_user(db, username=token_data.username)
+    if user is None:
         raise credentials_exception
-    return schemas.UserRead.from_orm(user)
+    return user
 
 
-def get_current_active_user(
-    current_user: models.User = Depends(get_current_user),
-) -> models.User:
-    if not crud.user.is_active(current_user):
+async def get_current_active_user(
+    current_user: schemas.UserBase = Depends(get_current_user),
+):
+    if not await crud.user.is_active(current_user):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Inactive user"
         )

@@ -12,11 +12,19 @@ class Gender(str, Enum):
 class UserBase(BaseModel):
     first_name: str
     last_name: str
+    username: str
     gender: Gender = Field(None, alias="gender")
     phone: str
     email: str
     status: str
     is_active: Optional[bool] = True
+
+    class Config:
+        orm_mode = True
+
+
+class UserInDB(UserBase):
+    hashed_password: str
 
     class Config:
         orm_mode = True
