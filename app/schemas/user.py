@@ -14,20 +14,10 @@ class UserBase(BaseModel):
     last_name: str
     username: str
     gender: Gender = Field(None, alias="gender")
-    phone: str
+    phone: str = None
     email: str
-    status: str
     is_active: Optional[bool] = True
-
-    class Config:
-        orm_mode = True
-
-
-class UserInDB(UserBase):
-    hashed_password: str
-
-    class Config:
-        orm_mode = True
+    is_admin: Optional[bool] = False
 
 
 class UserCreate(UserBase):
@@ -43,8 +33,3 @@ class UserRead(UserBase):
 
     class Config:
         orm_mode = True
-
-
-class Login(BaseModel):
-    email: str
-    password: str

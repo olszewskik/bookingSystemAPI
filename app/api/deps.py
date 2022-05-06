@@ -55,3 +55,14 @@ async def get_current_active_user(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Inactive user"
         )
     return current_user
+
+
+async def get_current_active_admin(
+    current_user: schemas.UserBase = Depends(get_current_user),
+):
+    if not await crud.user.is_admin(current_user):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="The user doesn't have enough privileges",
+        )
+    return current_user

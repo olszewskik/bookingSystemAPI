@@ -1,10 +1,7 @@
-from typing import Optional
-from datetime import datetime
-
 from sqlalchemy.orm import Session
 
-from app.core.security import get_password_hash, verify_password
 from app import models, schemas
+from app.core.security import get_password_hash, verify_password
 
 
 class CRUDUser:
@@ -28,9 +25,7 @@ class CRUDUser:
             gender=user.gender,
             phone=user.phone,
             email=user.email,
-            status=user.status,
             password=get_password_hash(user.password),
-            creation_date=datetime.now(),
         )
         db.add(new_user)
         db.commit()
@@ -47,6 +42,9 @@ class CRUDUser:
 
     async def is_active(self, user: models.User):
         return user.is_active
+
+    async def is_admin(self, user: models.User):
+        return user.is_admin
 
 
 user = CRUDUser()
