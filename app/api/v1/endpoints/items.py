@@ -14,8 +14,7 @@ router = APIRouter()
 async def read_items(
     skip: int = 0,
     limit: int = 100,
-    db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
 ):
     items = await crud.item.get_items(db, skip=skip, limit=limit)
     return items
@@ -24,8 +23,7 @@ async def read_items(
 @router.post("/", response_model=schemas.ItemCreate)
 async def create_item(
     item: schemas.ItemCreate,
-    db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_admin),
+    db: Session = Depends(get_db)
 ):
     return await crud.item.create_item(db=db, item=item)
 
@@ -33,10 +31,25 @@ async def create_item(
 @router.get("/{item_id}", response_model=schemas.ItemRead)
 async def read_item(
     item_id: int,
-    db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
 ):
     db_item = await crud.item.get_item(db, item_id=item_id)
     if db_item is None:
         raise HTTPException(status_code=404, detail="Item not found")
+    return db_item
+
+
+@router.put("/{item_id}", response_model=schemas.ItemCreate)
+async def update_item(item_id: int, db: Session = Depends(get_db)):
+    db_item = await crud.item.get_item(db, item_id=item_id)
+    if db_item is None:
+        raise HTTPException(status_code=404, detail="Item not found")
+
+
+@router.delete("/{item_id}", response_model=schemas.ItemRead)
+async def delete_item(item_id: int, db: Session = Depends(get_db)):
+    db_item = await crud.item.get_item(db, item_id=item_id)
+    if db_item is None:
+        raise HTTPException(status_code=404, detail="Item not found")
+    db_item = await crud.item.remove_item(db=db, item_id=item_id)
     return db_item

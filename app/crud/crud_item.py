@@ -19,5 +19,14 @@ class CRUDItem:
         db.refresh(db_item)
         return db_item
 
+    async def update_item(self, db: Session, *, item_id: int):
+        pass
+
+    async def remove_item(self, db: Session, *, item_id: int):
+        db_item = db.query(Item).get(item_id)
+        db.delete(db_item)
+        db.commit()
+        return db_item
+
 
 item = CRUDItem()
