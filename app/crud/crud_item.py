@@ -1,8 +1,11 @@
-from sqlalchemy.orm import Session
+import pytz
 from datetime import datetime
 
+from sqlalchemy.orm import Session
+
+from app.core.config import settings
 from app.models.item import Item
-from app.schemas.item import ItemCreate
+from app.schemas.item import ItemCreate, ItemUpdate
 
 
 class CRUDItem:
@@ -13,14 +16,18 @@ class CRUDItem:
         return db.query(Item).offset(skip).limit(limit).all()
 
     async def create_item(self, db: Session, *, item: ItemCreate):
-        db_item = Item(description=item.description, creation_date=datetime.now())
+        db_item = Item(description=item.description)
         db.add(db_item)
         db.commit()
         db.refresh(db_item)
         return db_item
 
-    async def update_item(self, db: Session, *, item_id: int):
-        pass
+    async def update_item(self, db: Session, *, item_id: int, request: ItemUpdate):
+        db_item = db.query(Item).filter(Item.id == item_id)
+        db_item.update(request)
+        db.commit()
+        db.refresh(db_item)
+        return db_item
 
     async def remove_item(self, db: Session, *, item_id: int):
         db_item = db.query(Item).get(item_id)
