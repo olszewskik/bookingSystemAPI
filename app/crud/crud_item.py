@@ -1,39 +1,37 @@
-import pytz
-from datetime import datetime
-
 from sqlalchemy.orm import Session
 
-from app.core.config import settings
-from app.models.item import Item
-from app.schemas.item import ItemCreate, ItemUpdate
+from app import models, schemas
+from app.utils.utils import utils
 
 
 class CRUDItem:
     async def get_item(self, db: Session, *, item_id: int):
-        return db.query(Item).filter(Item.id == item_id).first()
+        return db.query(models.Item).filter(models.Item.id == item_id).first()
 
     async def get_items(self, db: Session, *, skip: int = 0, limit: int = 100):
-        return db.query(Item).offset(skip).limit(limit).all()
+        return db.query(models.Item).offset(skip).limit(limit).all()
 
-    async def create_item(self, db: Session, *, item: ItemCreate):
-        db_item = Item(description=item.description)
+    async def create_item(self, db: Session, *, item: schemas.ItemCreate):
+        db_item = models.Item(description=item.description)
         db.add(db_item)
         db.commit()
         db.refresh(db_item)
         return db_item
 
-    async def update_item(self, db: Session, *, item_id: int, request: ItemUpdate):
-        db_item = db.query(Item).filter(Item.id == item_id).first()
+    async def update_item(
+        self, db: Session, *, item_id: int, request: schemas.ItemUpdate
+    ):
+        db_item = await self.get_item(db=db, item_id=item_id)
         for key, value in request:
             setattr(db_item, key, value)
-        db_item.last_modified_date = datetime.now(pytz.timezone(settings.TIMEZONE))
+        db_item.last_modified_date = utils.get_current_datetime()
         db.add(db_item)
         db.commit()
         db.refresh(db_item)
         return db_item
 
     async def remove_item(self, db: Session, *, item_id: int):
-        db_item = db.query(Item).get(item_id)
+        db_item = db.query(models.Item).get(item_id)
         db.delete(db_item)
         db.commit()
         return db_item

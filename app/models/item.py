@@ -1,10 +1,7 @@
-import pytz
-from datetime import datetime
-
 from sqlalchemy import Column, Integer, String, DateTime
 
 from app.db.base import Base
-from app.core.config import settings
+from app.utils.utils import utils
 
 
 class Item(Base):
@@ -12,7 +9,5 @@ class Item(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     description = Column(String(50))
-    creation_date = Column(
-        DateTime, default=datetime.now(pytz.timezone(settings.TIMEZONE))
-    )
+    creation_date = Column(DateTime, default=utils.get_current_datetime())
     last_modified_date = Column(DateTime, default=None)
