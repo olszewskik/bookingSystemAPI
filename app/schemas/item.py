@@ -21,5 +21,5 @@ class ItemRead(ItemBase):
         orm_mode = True
 
 
-class ItemUpdate(ItemRead):
+class ItemUpdate(ItemBase):
     pass

@@ -23,8 +23,11 @@ class CRUDItem:
         return db_item
 
     async def update_item(self, db: Session, *, item_id: int, request: ItemUpdate):
-        db_item = db.query(Item).filter(Item.id == item_id)
-        db_item.update(request)
+        db_item = db.query(Item).filter(Item.id == item_id).first()
+        for key, value in request:
+            setattr(db_item, key, value)
+        db_item.last_modified_date = datetime.now(pytz.timezone(settings.TIMEZONE))
+        db.add(db_item)
         db.commit()
         db.refresh(db_item)
         return db_item

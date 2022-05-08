@@ -35,7 +35,7 @@ async def read_item(item_id: int, db: Session = Depends(get_db)):
     "/{item_id}", response_model=schemas.ItemRead, status_code=status.HTTP_200_OK
 )
 async def update_item(
-    item_id: int, item: schemas.ItemRead, db: Session = Depends(get_db)
+    item_id: int, item: schemas.ItemUpdate, db: Session = Depends(get_db)
 ):
     db_item = await crud.item.get_item(db, item_id=item_id)
     if db_item is None:
