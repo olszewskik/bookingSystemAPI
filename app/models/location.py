@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Float
+from sqlalchemy.orm import relationship
 
 from app.db.base import Base
 
@@ -10,3 +11,4 @@ class Location(Base):
     name = Column(String(100))
     latitude = Column(Float)
     longitude = Column(Float)
+    shifts = relationship("Shift", back_populates="location")
