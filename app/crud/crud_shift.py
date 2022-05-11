@@ -2,6 +2,8 @@ from sqlalchemy.orm import Session
 
 from app import models, schemas
 
+from fastapi.encoders import jsonable_encoder
+
 
 class CRUDShift:
     def get_shift_by_id(self, db: Session, shift_id: int):
@@ -11,7 +13,13 @@ class CRUDShift:
         return db.query(models.Shift).offset(skip).limit(limit).all()
 
     def create_shift(self, db: Session, *, shift: schemas.Shift):
-        new_shift = models.Shift(**shift.dict())
+        new_shift = models.Shift(
+            location_id=shift.location_id,
+            day=shift.day,
+            start_time=shift.start_time,
+            end_time=shift.end_time,
+            is_active=shift.is_active,
+        )
         db.add(new_shift)
         db.commit()
         db.refresh(new_shift)

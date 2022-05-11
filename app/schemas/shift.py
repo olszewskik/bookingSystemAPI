@@ -10,7 +10,7 @@ class Shift(BaseModel):
     day: int
     start_time: datetime.time
     end_time: datetime.time
-    id_active: Optional[bool] = True
+    is_active: Optional[bool] = True
 
     class Config:
         orm_mode = True
