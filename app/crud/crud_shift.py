@@ -10,13 +10,8 @@ class CRUDShift:
     def get_shifts(self, db: Session, skip: int = 0, limit: int = 100):
         return db.query(models.Shift).offset(skip).limit(limit).all()
 
-    def create_shift(self, db: Session, shift: schemas.Shift):
-        new_shift = models.Shift(
-            location_id=shift.location_id,
-            day=shift.day,
-            start_time=shift.start_time,
-            end_time=shift.end_time,
-        )
+    def create_shift(self, db: Session, *, shift: schemas.Shift):
+        new_shift = models.Shift(**shift.dict())
         db.add(new_shift)
         db.commit()
         db.refresh(new_shift)
